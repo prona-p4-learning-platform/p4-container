@@ -1,5 +1,5 @@
 FROM p4lang/p4app
-# contains nearly everything we need for typical P4 assignments used in our masters' courses (e.g., p4c, bmv2, pi, mininet, ...)
+# p4lang/p4app contains nearly everything we need for typical P4 assignments used in our masters' courses (e.g., p4c, bmv2, pi, mininet, ...)
 
 LABEL de.hs-fulda.netlab.name="prona/p4-container" \
       de.hs-fulda.netlab.description="P4 and SDN learning environment example host instance to run assignments" \
@@ -25,22 +25,20 @@ RUN sudo apt-get update -y
 RUN sudo apt-get install -y curl git openssh-server
 
 # install packages needed for common assignments
-RUN sudo apt-get install -y tmux iperf net-tools mtr htop
-
-# install packages needed for p4 tutorial
 RUN sudo apt-get install -y --no-install-recommends --fix-missing \
-  python \
-  python-dev \
-  python-ipaddr \
-  python-psutil \
-  python-scapy \
-  python-setuptools \
+  tmux \
+  iperf \
+  iperf3 \
+  net-tools \ 
+  mtr \ 
+  htop \
   tcpdump \
+  tshark \
+  wget \
   unzip \
   vim \
-  nano \
   joe \
-  wget
+  nano
 
 # install node, needed to run language server proxy
 RUN curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
@@ -48,10 +46,34 @@ RUN sudo apt-get install -y nodejs
 
 # fetch typical tutorials and our p4-boilerplate and p4environment, so they can be used directly in the container for our courses
 RUN git clone https://github.com/jafingerhut/p4-guide
+
 RUN git clone https://github.com/p4lang/tutorials
+# psutil required to run exercises in tutorials
+RUN sudo pip install psutil
+
 RUN git clone https://github.com/nsg-ethz/p4-learning
-RUN git clone https://gitlab.cs.hs-fulda.de/flow-routing/cnsm2020/p4environment
+RUN git clone https://github.com/nsg-ethz/p4-utils
+RUN cd p4-utils && sudo ./install.sh
+# learning controller examples require bridge-utils
+RUN sudo apt-get install -y --no-install-recommends --fix-missing \
+  bridge-utils
+
+# currently support for p4environment is disabled, due to missing netem support in the base container image
+# also: p4environment kills eth0@ifXYZ interface providing ip address of container during stop
+#
+#RUN git clone https://gitlab.cs.hs-fulda.de/flow-routing/cnsm2020/p4environment
+## CAUTION: p4environment can currently not be used with wsl2 under windows due to missing sch_netem module/support
+## fixing env to be able to use p4environment
+#RUN sudo apt purge -y python-scapy
+## python modules would also be installed by p4environment on first use, psutil already installed for p4 tutorials
+#RUN sudo pip install networkx "scapy>=2.4.3" psutil numpy matplotlib scikit-learn pyyaml
+## p4environment depends on ovs
+#RUN sudo apt-get install -y --no-install-recommends --fix-missing \
+#  openvswitch-switch
+
 RUN git clone https://github.com/prona-p4-learning-platform/p4-boilerplate
+# make examples using p4 tutorials relative utils import work in boilerplate
+RUN ln -s tutorials/utils utils
 
 # fetch language server proxy
 RUN git clone https://github.com/wylieconlon/jsonrpc-ws-proxy

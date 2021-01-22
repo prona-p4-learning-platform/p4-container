@@ -44,11 +44,11 @@ while getopts ":hcs" opt; do
 done
 
 if [[ "$SHELL_CMD_MODE" == "true" ]] && [[ "$SERVICE_MODE" == "true" ]] ; then
-  echo "-s and -i are mutually exclusive. Either start the services when running the container using -s OR use -i to drop into the shell of the container."
+  echo "-s and -i are mutually exclusive. Either start the services when running the container using -s OR use -c to drop into the shell of the container."
   usage
   exit 1
 elif [[ -z ${SHELL_CMD_MODE} ]] && [[ -z ${SERVICE_MODE} ]] ; then
-  echo "Start the container using -s to start the services OR use -i to run a command inside the container."
+  echo "Start the container using -s to start the services OR use -c to run a command inside the container."
   usage
   exit 1
 fi
@@ -66,6 +66,12 @@ while [ $# -gt 0 ]; do
         fi
 done
 
+#if [[ $(grep -i Microsoft /proc/version) ]]; then
+#  echo "####################"
+#  echo "# CAUTION: Shell seems to be running in WSL on Windows. Some tools, e.g., p4environment will not be usable under due to lack of support for sch_netem in WSL2"
+#  echo "####################"
+#fi
+
 if [ "$SERVICE_MODE" == "true" ] ; then
   echo "Starting ProNA p4-container services..."
   echo
@@ -73,6 +79,9 @@ if [ "$SERVICE_MODE" == "true" ] ; then
   sudo service ssh start
   echo "You should be able to connect to the container using SSH (default exposed port is 3022, default username: p4, default password: p4)"
   echo 
+  #echo "Starting openvswitch-switch (needed by p4environment)"
+  #sudo service openvswitch-switch start
+  #echo
   echo "Strating LanguageServer Proxy... "
   cd /home/p4/jsonrpc-ws-proxy
   node dist/server.js --port 3005 --languageServers servers.yml
