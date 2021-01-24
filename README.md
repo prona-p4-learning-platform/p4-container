@@ -32,3 +32,9 @@ docker run -it -p 3022:22 -p 3005:3005 --rm --privileged prona/p4-container -s
 The container automatically starts an SSH daemon that can be used to login using user p4 and password p4 as typically used for P4 tutorials and environments. Also, a language server proxy is started on port 3005, that can be used by the monaco editor deployed with [learn-sdn-hub](https://github.com/prona-p4-learning-platform/learn-sdn-hub).
 
 The ```--privileged``` option is necessary to run mininet in the container, as typically done for P4 labs and tutorials.
+
+## CAUTION
+
+Be advised, that if you want to run this container using Docker on Windows (using WSL2), some features in mininet, openvswitch, p4environment etc. will not be available to to lack of support for sch_netem in WSL2.
+
+If you plan to use p4environment in the container, please note that its support to be run inside a container is limited.
