@@ -61,15 +61,15 @@ RUN sudo apt-get install -y --no-install-recommends --fix-missing \
 # currently support for p4environment is disabled, due to missing netem support in the base container image
 # also: p4environment kills eth0@ifXYZ interface providing ip address of container during stop
 #
-#RUN git clone https://gitlab.cs.hs-fulda.de/flow-routing/cnsm2020/p4environment
+RUN git clone https://gitlab.cs.hs-fulda.de/flow-routing/cnsm2020/p4environment
 ## CAUTION: p4environment can currently not be used with wsl2 under windows due to missing sch_netem module/support
 ## fixing env to be able to use p4environment
-#RUN sudo apt purge -y python-scapy
+RUN sudo apt purge -y python-scapy
 ## python modules would also be installed by p4environment on first use, psutil already installed for p4 tutorials
-#RUN sudo pip install networkx "scapy>=2.4.3" psutil numpy matplotlib scikit-learn pyyaml
+RUN sudo pip install networkx "scapy>=2.4.3" psutil numpy matplotlib scikit-learn pyyaml
 ## p4environment depends on ovs
-#RUN sudo apt-get install -y --no-install-recommends --fix-missing \
-#  openvswitch-switch
+RUN sudo apt-get install -y --no-install-recommends --fix-missing \
+  openvswitch-switch
 
 RUN git clone https://github.com/prona-p4-learning-platform/p4-boilerplate
 # make examples using p4 tutorials relative utils import work in boilerplate

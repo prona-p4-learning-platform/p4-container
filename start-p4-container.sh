@@ -66,11 +66,42 @@ while [ $# -gt 0 ]; do
         fi
 done
 
-#if [[ $(grep -i Microsoft /proc/version) ]]; then
-#  echo "####################"
-#  echo "# CAUTION: Shell seems to be running in WSL on Windows. Some tools, e.g., p4environment will not be usable under due to lack of support for sch_netem in WSL2"
-#  echo "####################"
-#fi
+LIGHTBLUE='\033[1;34m'
+LIGHTRED='\033[1;31m'
+NOCOLOR='\033[0m'
+
+echo -e "##################################################################" | sudo tee -a /etc/issue.net
+echo -e "# ${LIGHTBLUE}Welcome to ProNA p4-container!${NOCOLOR}                                 #" | sudo tee -a /etc/issue.net
+echo -e "# ${LIGHTBLUE}==============================${NOCOLOR}                                 #" | sudo tee -a /etc/issue.net
+echo -e "# You should only use this container image for dev/test setup    #" | sudo tee -a /etc/issue.net
+echo -e "# and not in production. See also:                               #" | sudo tee -a /etc/issue.net
+echo -e "# * ${LIGHTBLUE}https://github.com/prona-p4-learning-platform/p4-container${NOCOLOR}   #" | sudo tee -a /etc/issue.net
+echo -e "# * ${LIGHTBLUE}https://github.com/prona-p4-learning-platform/p4-boilerplate${NOCOLOR} #" | sudo tee -a /etc/issue.net
+echo -e "# for information on using this container for P4 exercises       #" | sudo tee -a /etc/issue.net
+echo -e "##################################################################" | sudo tee -a /etc/issue.net
+echo -e "${NOCOLOR}" | sudo tee -a /etc/issue.net
+
+if [[ $(grep -i Microsoft /proc/version) ]]; then
+  echo -e "${LIGHTRED}##############################################" | sudo tee -a /etc/issue.net
+  echo -e "# CAUTION: Container seems to be running in  #" | sudo tee -a /etc/issue.net
+  echo -e "#          WSL on Windows. Some tools, will  #" | sudo tee -a /etc/issue.net
+  echo -e "#          not be usable due to lack of      #" | sudo tee -a /etc/issue.net
+  echo -e "#          support, e.g., for netem in WSL2  #" | sudo tee -a /etc/issue.net
+  echo -e "##############################################" | sudo tee -a /etc/issue.net
+  echo -e "${NOCOLOR}" | sudo tee -a /etc/issue.net
+fi
+
+echo -e "${LIGHTRED}##############################################" | sudo tee -a /etc/issue.net
+echo -e "# CAUTION: if you plan to use p4environment, #" | sudo tee -a /etc/issue.net
+echo -e "#          please note that due to typical   #" | sudo tee -a /etc/issue.net
+echo -e "#          restrictions of containers, it    #" | sudo tee -a /etc/issue.net
+echo -e "#          should be run on a VM or a host   #" | sudo tee -a /etc/issue.net
+echo -e "##############################################" | sudo tee -a /etc/issue.net
+echo -e "${NOCOLOR}" | sudo tee -a /etc/issue.net
+
+sudo bash -c "echo '#!/bin/bash' >/etc/update-motd.d/60-prona"
+sudo bash -c "echo 'cat /etc/issue.net' >>/etc/update-motd.d/60-prona"
+sudo chmod +x /etc/update-motd.d/60-prona
 
 if [ "$SERVICE_MODE" == "true" ] ; then
   echo "Starting ProNA p4-container services..."
@@ -79,10 +110,10 @@ if [ "$SERVICE_MODE" == "true" ] ; then
   sudo service ssh start
   echo "You should be able to connect to the container using SSH (default exposed port is 3022, default username: p4, default password: p4)"
   echo 
-  #echo "Starting openvswitch-switch (needed by p4environment)"
-  #sudo service openvswitch-switch start
-  #echo
-  echo "Strating LanguageServer Proxy... "
+  echo "Starting openvswitch-switch (needed by p4environment)"
+  sudo service openvswitch-switch start
+  echo
+  echo "Starting LanguageServer Proxy... "
   cd /home/p4/jsonrpc-ws-proxy
   node dist/server.js --port 3005 --languageServers servers.yml
 else
