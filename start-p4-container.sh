@@ -91,14 +91,6 @@ if [[ $(grep -i Microsoft /proc/version) ]]; then
   echo -e "${NOCOLOR}" | sudo tee -a /etc/issue.net
 fi
 
-echo -e "${LIGHTRED}##############################################" | sudo tee -a /etc/issue.net
-echo -e "# CAUTION: if you plan to use p4environment, #" | sudo tee -a /etc/issue.net
-echo -e "#          please note that due to typical   #" | sudo tee -a /etc/issue.net
-echo -e "#          restrictions of containers, it    #" | sudo tee -a /etc/issue.net
-echo -e "#          should be run on a VM or a host   #" | sudo tee -a /etc/issue.net
-echo -e "##############################################" | sudo tee -a /etc/issue.net
-echo -e "${NOCOLOR}" | sudo tee -a /etc/issue.net
-
 sudo bash -c "echo '#!/bin/bash' >/etc/update-motd.d/60-prona"
 sudo bash -c "echo 'cat /etc/issue.net' >>/etc/update-motd.d/60-prona"
 sudo chmod +x /etc/update-motd.d/60-prona
@@ -117,6 +109,9 @@ if [ "$SERVICE_MODE" == "true" ] ; then
   cd /home/p4/jsonrpc-ws-proxy
   node dist/server.js --port 3005 --languageServers servers.yml
 else
+  echo "Starting openvswitch-switch (needed by p4environment)"
+  sudo service openvswitch-switch start
+  echo
   bash -c "$SHELL_CMD"
 fi
 
