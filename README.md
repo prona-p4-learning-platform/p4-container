@@ -20,6 +20,14 @@ docker run -it --rm --privileged prona/p4-container -c "bash -c ls"
 
 The ```--privileged``` option is necessary to run mininet in the container, as typically done for P4 labs and tutorials.
 
+## Using persistent storage in the container
+
+You can mount a local directory to be used as persistent storage in the container. See mountpoints in Docker documentation for additional information. Example:
+
+```
+docker run -it --rm --privileged --mount type=bind,source="$(pwd)"/my-local-directory,target=/home/p4/my-local-directory prona/p4-container -c "bash -c ls /home/p4/my-local-directory"
+```
+
 ## Running p4-container in service mode, e.g., to be used as a host instance for learn-sdn-hub
 
 You can also use p4-container as host instance for [learn-sdn-hub](https://github.com/prona-p4-learning-platform/learn-sdn-hub) backend. In this case, start p4-container using the ```-s``` parameter.
@@ -33,8 +41,6 @@ The container automatically starts an SSH daemon that can be used to login using
 
 The ```--privileged``` option is necessary to run mininet in the container, as typically done for P4 labs and tutorials.
 
-## CAUTION
+## CAUTION when using p4-container in WSL on Windows
 
 Be advised, that if you want to run this container using Docker on Windows (using WSL2), some features in mininet, openvswitch, p4environment etc. will not be available to to lack of support for sch_netem in WSL2.
-
-If you plan to use p4environment in the container, please note that its support to be run inside a container is limited.
