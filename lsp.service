@@ -1,0 +1,15 @@
+Description=LSP load balancer server
+After=network.target
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+KillMode=process
+User=p4
+WorkingDirectory=/home/p4/jsonrpc-ws-proxy
+ExecStart=node dist/server.js --port 3005 --languageServers servers.yml
+
+[Install]
+WantedBy=multi-user.target
+Alias=lsp-loadbalancer.service
