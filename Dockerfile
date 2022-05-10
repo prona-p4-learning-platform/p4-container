@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-#used p4lang/p4app before, but contained switch does not support thrift currently, maybe take a look at 2.0.0 as soon as it is released
+# used p4lang/p4app before, but contained switch does not support thrift currently, maybe take a look at 2.0.0 as soon as it is released
 
 LABEL de.hs-fulda.netlab.name="prona/p4-container" \
       de.hs-fulda.netlab.description="P4 and SDN learning environment example host instance to run assignments" \
@@ -75,7 +75,6 @@ RUN p4-guide/bin/install-p4dev-v5.sh
 ###############################################################################
 
 RUN git clone https://github.com/p4lang/tutorials
-
 RUN git clone https://github.com/nsg-ethz/p4-learning
 # commented out dependencies in p4-utils fork, otherwise p4 tutorials will not work anymore (conflicting version of p4runtime etc.)
 RUN git clone https://github.com/prona-p4-learning-platform/p4-utils
@@ -108,24 +107,6 @@ RUN sudo update-rc.d ssh enable
 RUN sudo update-rc.d openvswitch-switch enable
 
 # configure lsp service
-#RUN echo '[Unit]\n\
-#Description=LSP load balancer server\n\
-#After=network.target\n\
-#\n\
-#[Service]\n\
-#Type=simple\n\
-#Restart=always\n\
-#RestartSec=1\n\
-#KillMode=process\n\
-#User=p4\n\
-#WorkingDirectory=/home/p4/jsonrpc-ws-proxy\n\
-#ExecStart=node dist/server.js --port 3005 --languageServers servers.yml\n\
-#\n\
-#[Install]\n\
-#WantedBy=multi-user.target\n\
-#Alias=lsp-loadbalancer.service\n'\
-#>> lsp.service
-#RUN sudo cp lsp.service /lib/systemd/system/
 COPY lsp.service /lib/systemd/system/
 RUN sudo systemctl enable lsp
 
