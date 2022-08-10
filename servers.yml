@@ -1,7 +1,7 @@
 langservers:
   p4:
     - node
-    - /home/p4/p4-vscode-extension/server/build/server.js
+    - /home/p4/p4-ls/server/out/server.js
     - --stdio
   python:
-    - pyls
+    - pylsp
