@@ -94,6 +94,9 @@ RUN git clone https://github.com/prona-p4-learning-platform/p4-boilerplate
 # make examples using p4 tutorials relative utils import work in boilerplate
 RUN ln -s tutorials/utils utils
 
+# install ryu
+RUN git clone https://github.com/faucetsdn/ryu.git && cd ryu && sudo pip3 install .
+
 # fetch language server proxy
 RUN git clone https://github.com/wylieconlon/jsonrpc-ws-proxy
 RUN cd jsonrpc-ws-proxy && npm install && npm run prepare
