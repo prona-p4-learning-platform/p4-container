@@ -44,7 +44,7 @@ RUN sudo DEBIAN_FRONTEND=noninteractive apt-get -y --no-install-recommends --fix
   wget \
   unzip \
   vim \
-  joe \
+  iproute2 \
   nano
 
 # install openvswitch - needed to run mininet from the console without p4 etc.
@@ -61,16 +61,19 @@ RUN git clone https://github.com/jafingerhut/p4-guide
 # install scripts provided in p4-guide contain nearly everything we need for typical P4 assignments used in our masters' courses (e.g., p4c, bmv2, pi, mininet, ...)
 # currently recommended version: install-p4dev-v5.sh
 # see also: https://github.com/jafingerhut/p4-guide/blob/master/bin/README-install-troubleshooting.md
-RUN p4-guide/bin/install-p4dev-v5.sh
+#RUN p4-guide/bin/install-p4dev-v5.sh
 # install-p4dev-v5.sh offers fast installation, but is not supporting python2 anymore, to be able to use python2, install-p4dev-v2.sh can be executed instead, though it will run ~100 minutes
 
 # cleanup afterwards, as we don't need sources etc. for the labs, (jafingerhut p4-guide build stuff occupies ~6 GB)
 # RUN p4-guide/bin/install-p4dev-v2.sh && sudo rm -rf PI behavioral-model p4c grpc protobuf mininet install-details p4setup.bash p4setup.csh
 
+# 7/2025 recommended version v8
+RUN ./p4-guide/bin/install-p4dev-v8.sh | tee log.txt
+
 ###############################################################################
 #
 # all changes above this point will possibly cost you some hours of build
-# time, as running install-p4dev-v2.sh can take some time compiling the
+# time, as running install-p4dev-(.*).sh can take some time compiling the
 # entire p4 toolchain (PI behavioral-model p4c grpc protobuf mininet)
 #
 ###############################################################################
@@ -94,8 +97,9 @@ RUN git clone https://github.com/prona-p4-learning-platform/p4-boilerplate
 # make examples using p4 tutorials relative utils import work in boilerplate
 RUN ln -s tutorials/utils utils
 
-# install ryu
-RUN git clone https://github.com/faucetsdn/ryu.git && cd ryu && sudo pip3 install .
+# install os-ken
+#RUN git clone https://github.com/faucetsdn/ryu.git && cd ryu && sudo pip3 install .
+RUN git clone https://github.com/openstack/os-ken.git && cd os-ken && sudo pip3 install .
 
 # fetch language server proxy
 RUN git clone https://github.com/wylieconlon/jsonrpc-ws-proxy
